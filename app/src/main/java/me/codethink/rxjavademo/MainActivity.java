@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -28,6 +29,9 @@ public class MainActivity extends ActionBarActivity {
         //Markdown to HTML
         basicMarkdown2Html();
         basicMarkdown2HtmlSimplifiedWithLambda();
+
+        //unsubscribe
+        unsubscribe();
     }
 
     private void basicRxHelloWorld() {
@@ -92,6 +96,11 @@ public class MainActivity extends ActionBarActivity {
                 .subscribe(s -> log(s));
     }
 
+    private void unsubscribe() {
+        Subscription subscription = Observable.just("Unsubscribe me later").subscribe(s -> log(s));
+        subscription.unsubscribe();
+        log("isUnsubscribed = " + subscription.isUnsubscribed());
+    }
     private void log (String s) {
         Log.v(LOG_TAG, s);
     }
