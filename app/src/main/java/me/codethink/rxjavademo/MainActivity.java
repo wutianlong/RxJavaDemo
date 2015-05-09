@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -29,6 +31,10 @@ public class MainActivity extends ActionBarActivity {
         //Markdown to HTML
         basicMarkdown2Html();
         basicMarkdown2HtmlSimplifiedWithLambda();
+
+        //Multithreading
+        multithread();
+
 
         //unsubscribe
         unsubscribe();
@@ -94,6 +100,21 @@ public class MainActivity extends ActionBarActivity {
         Observable.just("#Basic Markdown to HTML with lambda")
                 .map(s -> s != null && s.startsWith("#") ? "<h1>" + s.substring(1, s.length()) + "</h1>" : null)
                 .subscribe(s -> log(s));
+    }
+
+    private void multithread() {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                log("Observable on Thread -> " + Thread.currentThread().getName());
+                subscriber.onNext("MultiThreading");
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    log("Subscriber on Thread -> " + Thread.currentThread().getName());
+                });
     }
 
     private void unsubscribe() {
