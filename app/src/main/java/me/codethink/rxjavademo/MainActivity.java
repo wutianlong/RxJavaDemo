@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
-import rx.observers.Observers;
+import rx.functions.Func1;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -19,9 +19,15 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Hello World
         basicRxHelloWorld();
         simplifiedRxHelloWorld();
         simplifiedRxHelloWorldWithLambda();
+
+        //Markdown to HTML
+        basicMarkdown2Html();
+        basicMarkdown2HtmlSimplifiedWithLambda();
     }
 
     private void basicRxHelloWorld() {
@@ -66,6 +72,24 @@ public class MainActivity extends ActionBarActivity {
 
     private void simplifiedRxHelloWorldWithLambda() {
         Observable.just("Hello RxJava Simplified with Lambda").subscribe(s -> log(s));
+    }
+
+    private void basicMarkdown2Html() {
+        Observable.just("#Basic Markdown to HTML").map(new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                if (s != null && s.startsWith("#")) {
+                    return "<h1>" + s.substring(1, s.length()) + "</h1>";
+                }
+                return null;
+            }
+        }).subscribe(s -> log(s));
+    }
+
+    private void basicMarkdown2HtmlSimplifiedWithLambda() {
+        Observable.just("#Basic Markdown to HTML with lambda")
+                .map(s -> s != null && s.startsWith("#") ? "<h1>" + s.substring(1, s.length()) + "</h1>" : null)
+                .subscribe(s -> log(s));
     }
 
     private void log (String s) {
